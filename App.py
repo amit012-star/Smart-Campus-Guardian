@@ -7,7 +7,6 @@ from database import (
     update_status,
     authenticate_user
 )
-)
 
 from ai_engine import analyze_emergency
 
