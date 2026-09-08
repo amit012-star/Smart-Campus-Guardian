@@ -147,10 +147,10 @@ def student_dashboard():
         ]
     )
      location_details = st.text_input(
-     "📍 Location Details",
-     placeholder="Example: 2nd floor, near Room 204"
+        "📍 Location Details",
+        placeholder="Example: 2nd floor,
+     near Room 204"
     )
-
     description = st.text_area(
         "Describe the Emergency"
     )
