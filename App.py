@@ -253,6 +253,26 @@ def admin_dashboard():
             st.write(
                 f"**Status:** {report[6]}"
             )
+            new_status = st.selectbox(
+                "Update Status",
+                ["Pending", "Responded", "Resolved"],
+                index=["Pending", "Responded", "Resolved"].index(report[6]),
+                key=f"status_{report[0]}"
+            )
+
+            if st.button(
+               "Update Status",
+                key=f"update_{report[0]}"
+            ):
+
+                update_status(
+                   report[0],
+                   new_status
+                )
+
+                st.success("Status updated successfully!")
+
+                st.rerun()
 
             st.write(
                 f"**Time:** {report[7]}"
