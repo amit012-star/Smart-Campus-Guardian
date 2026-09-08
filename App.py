@@ -28,114 +28,242 @@ st.set_page_config(
 
 
 # =========================================================
-# CUSTOM CSS
+# PROFESSIONAL DESIGN
 # =========================================================
 
 st.markdown("""
 <style>
 
-.main {
-    padding-top: 0rem;
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
 }
 
 .block-container {
-    padding-top: 1.5rem;
+    padding-top: 1rem;
     padding-bottom: 2rem;
+    max-width: 1200px;
 }
 
 
-/* Main Hero */
+/* Main Background */
 
-.hero {
-    padding: 45px 30px;
-    border-radius: 25px;
-    text-align: center;
+.stApp {
+    background: #f5f7fb;
+}
+
+
+/* Top Header */
+
+.top-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 15px 25px;
+    border-radius: 0 0 16px 16px;
+    margin-bottom: 25px;
+}
+
+.brand {
+    font-size: 24px;
+    font-weight: 800;
+    color: #123b70;
+}
+
+.brand-small {
+    font-size: 13px;
+    color: #64748b;
+}
+
+
+/* Hero */
+
+.hero-box {
     background: linear-gradient(
         135deg,
-        #0f172a,
-        #1e3a8a,
-        #2563eb
+        #0b1f3a 0%,
+        #123b70 55%,
+        #1769aa 100%
     );
+
+    padding: 55px 35px;
+    border-radius: 24px;
     color: white;
-    margin-bottom: 25px;
-    box-shadow: 0px 10px 30px rgba(0,0,0,0.18);
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(15, 43, 76, 0.18);
+    margin-bottom: 28px;
 }
 
-.hero-icon {
-    font-size: 65px;
+.hero-shield {
+    font-size: 58px;
+    margin-bottom: 10px;
 }
 
 .hero-title {
     font-size: 42px;
     font-weight: 800;
-    margin-top: 5px;
+    letter-spacing: -1px;
 }
 
 .hero-subtitle {
-    font-size: 19px;
-    opacity: 0.92;
+    font-size: 18px;
     margin-top: 10px;
+    opacity: 0.9;
+}
+
+.hero-tag {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    font-size: 14px;
+}
+
+
+/* Section Heading */
+
+.section-heading {
+    text-align: center;
+    font-size: 27px;
+    font-weight: 800;
+    color: #172033;
+    margin: 30px 0 8px 0;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 25px;
 }
 
 
 /* Feature Cards */
 
 .feature-card {
-    padding: 22px;
+    background: white;
+    border: 1px solid #e6eaf0;
     border-radius: 18px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    padding: 25px 18px;
+    min-height: 185px;
     text-align: center;
-    min-height: 150px;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.06);
+    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
 }
 
 .feature-icon {
-    font-size: 35px;
+    font-size: 38px;
+    margin-bottom: 10px;
 }
 
 .feature-title {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 17px;
+    font-weight: 750;
+    color: #172033;
+}
+
+.feature-description {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
     margin-top: 8px;
 }
 
-.feature-text {
-    font-size: 14px;
-    color: #64748b;
-    margin-top: 6px;
+
+/* Login Area */
+
+.login-wrapper {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
 }
 
 
-/* Login Card */
+/* Login Heading */
 
-.login-card {
-    padding: 25px;
-    border-radius: 20px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0px 8px 25px rgba(0,0,0,0.08);
+.login-title {
+    text-align: center;
+    font-size: 25px;
+    font-weight: 800;
+    color: #172033;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+
+/* Trust Bar */
+
+.trust-bar {
+    background: #eef6ff;
+    border: 1px solid #d7e9ff;
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    color: #31577d;
+    margin-top: 25px;
 }
 
 
 /* Footer */
 
-.footer {
+.footer-box {
     text-align: center;
-    padding: 20px;
+    margin-top: 35px;
+    padding: 22px;
     color: #64748b;
     font-size: 13px;
+    border-top: 1px solid #e5e7eb;
 }
 
 
-/* Section Title */
+/* Buttons */
 
-.section-title {
-    text-align: center;
-    font-size: 25px;
-    font-weight: 750;
-    margin-top: 20px;
-    margin-bottom: 20px;
+.stButton > button {
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+
+/* Dashboard Cards */
+
+.dashboard-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .hero-title {
+        font-size: 30px;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
+    }
+
+    .hero-box {
+        padding: 40px 20px;
+    }
+
 }
 
 </style>
@@ -161,19 +289,40 @@ if "role" not in st.session_state:
 
 
 # =========================================================
-# ATTRACTIVE FRONT / LOGIN SCREEN
+# PROFESSIONAL FRONT SCREEN
 # =========================================================
 
 if not st.session_state.logged_in:
 
     # -----------------------------------------------------
-    # HERO SECTION
+    # INSTITUTE HEADER
     # -----------------------------------------------------
 
     st.markdown("""
-    <div class="hero">
+    <div class="top-header">
 
-        <div class="hero-icon">🛡️</div>
+        <div class="brand">
+            🛡️ Smart Campus Guardian
+        </div>
+
+        <div class="brand-small">
+            Digital Campus Safety & Emergency Management Platform
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    # -----------------------------------------------------
+    # HERO
+    # -----------------------------------------------------
+
+    st.markdown("""
+    <div class="hero-box">
+
+        <div class="hero-shield">
+            🛡️
+        </div>
 
         <div class="hero-title">
             Smart Campus Guardian
@@ -183,8 +332,11 @@ if not st.session_state.logged_in:
             AI-Based College Emergency & Safety Management System
         </div>
 
-        <div style="margin-top:18px; font-size:15px;">
-            🚨 Report • 🤖 Analyze • 👥 Respond • 📊 Monitor
+        <div class="hero-tag">
+            🚨 Report &nbsp; • &nbsp;
+            🤖 Analyze &nbsp; • &nbsp;
+            👥 Respond &nbsp; • &nbsp;
+            📊 Monitor
         </div>
 
     </div>
@@ -192,26 +344,24 @@ if not st.session_state.logged_in:
 
 
     # -----------------------------------------------------
-    # WELCOME MESSAGE
+    # INTRODUCTION
     # -----------------------------------------------------
 
     st.markdown(
-        '<div class="section-title">Welcome to Smart Campus Safety</div>',
+        '<div class="section-heading">A Safer & Smarter Campus</div>',
         unsafe_allow_html=True
     )
 
-    st.write(
-        "A centralized digital platform designed to help students "
-        "report emergencies quickly and help campus administrators "
-        "manage emergency response efficiently."
+    st.markdown(
+        '<div class="section-subtitle">'
+        'One centralized platform for reporting, analyzing and managing campus emergencies.'
+        '</div>',
+        unsafe_allow_html=True
     )
 
 
-    st.write("")
-
-
     # -----------------------------------------------------
-    # FEATURE CARDS
+    # FEATURES
     # -----------------------------------------------------
 
     col1, col2, col3, col4 = st.columns(4)
@@ -221,14 +371,17 @@ if not st.session_state.logged_in:
         st.markdown("""
         <div class="feature-card">
 
-            <div class="feature-icon">🚨</div>
+            <div class="feature-icon">
+                🚨
+            </div>
 
             <div class="feature-title">
                 Emergency Reporting
             </div>
 
-            <div class="feature-text">
-                Quickly report medical, fire, security and other emergencies.
+            <div class="feature-description">
+                Students can quickly report medical,
+                fire, accident and security emergencies.
             </div>
 
         </div>
@@ -240,14 +393,17 @@ if not st.session_state.logged_in:
         st.markdown("""
         <div class="feature-card">
 
-            <div class="feature-icon">🤖</div>
-
-            <div class="feature-title">
-                AI Analysis
+            <div class="feature-icon">
+                🤖
             </div>
 
-            <div class="feature-text">
-                Automatically analyze emergency priority and suggest action.
+            <div class="feature-title">
+                AI-Based Analysis
+            </div>
+
+            <div class="feature-description">
+                Analyze emergency information and
+                determine priority with recommended action.
             </div>
 
         </div>
@@ -259,14 +415,17 @@ if not st.session_state.logged_in:
         st.markdown("""
         <div class="feature-card">
 
-            <div class="feature-icon">👥</div>
-
-            <div class="feature-title">
-                Response Teams
+            <div class="feature-icon">
+                👥
             </div>
 
-            <div class="feature-text">
-                Assign the appropriate campus response team to each report.
+            <div class="feature-title">
+                Response Management
+            </div>
+
+            <div class="feature-description">
+                Assign medical, security, fire and
+                maintenance teams to emergencies.
             </div>
 
         </div>
@@ -278,22 +437,21 @@ if not st.session_state.logged_in:
         st.markdown("""
         <div class="feature-card">
 
-            <div class="feature-icon">📊</div>
+            <div class="feature-icon">
+                📊
+            </div>
 
             <div class="feature-title">
                 Smart Analytics
             </div>
 
-            <div class="feature-text">
-                Monitor emergency trends, priority and response status.
+            <div class="feature-description">
+                Monitor emergency reports, priorities
+                and response status through analytics.
             </div>
 
         </div>
         """, unsafe_allow_html=True)
-
-
-    st.write("")
-    st.write("")
 
 
     # -----------------------------------------------------
@@ -301,44 +459,55 @@ if not st.session_state.logged_in:
     # -----------------------------------------------------
 
     st.markdown(
-        '<div class="section-title">🔐 Secure Login</div>',
+        '<div class="section-heading">Secure Access</div>',
         unsafe_allow_html=True
     )
 
-    login_col1, login_col2, login_col3 = st.columns(
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Authorized students and administrators can access the system.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+
+    login_left, login_center, login_right = st.columns(
         [1, 2, 1]
     )
 
-    with login_col2:
+    with login_center:
 
-        st.markdown(
-            '<div class="login-card">',
-            unsafe_allow_html=True
-        )
+        st.markdown("""
+        <div class="login-wrapper">
+
+            <div class="login-title">
+                🔐 Welcome Back
+            </div>
+
+            <div class="login-subtitle">
+                Sign in to Smart Campus Guardian
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
+
 
         username = st.text_input(
             "👤 Username",
-            placeholder="Enter your username"
+            placeholder="Enter username"
         )
 
         password = st.text_input(
             "🔑 Password",
             type="password",
-            placeholder="Enter your password"
+            placeholder="Enter password"
         )
 
-        login_button = st.button(
-            "🚀 Login to Smart Campus Guardian",
+
+        if st.button(
+            "🚀 Sign In",
             use_container_width=True
-        )
-
-        st.markdown(
-            '</div>',
-            unsafe_allow_html=True
-        )
-
-
-        if login_button:
+        ):
 
             role = authenticate_user(
                 username,
@@ -367,12 +536,16 @@ if not st.session_state.logged_in:
     # SECURITY MESSAGE
     # -----------------------------------------------------
 
-    st.write("")
+    st.markdown("""
+    <div class="trust-bar">
 
-    st.info(
-        "🔒 Your emergency information is stored securely "
-        "and can be managed by authorized campus administrators."
-    )
+        🔒 <b>Secure Campus Platform</b><br>
+
+        Emergency information is accessible only
+        to authorized system users.
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
     # -----------------------------------------------------
@@ -380,11 +553,13 @@ if not st.session_state.logged_in:
     # -----------------------------------------------------
 
     st.markdown("""
-    <div class="footer">
+    <div class="footer-box">
 
-        🛡️ Smart Campus Guardian<br>
+        🛡️ <b>Smart Campus Guardian</b><br>
+
         AI-Based College Emergency & Safety Management System<br><br>
-        Designed for a safer and smarter campus
+
+        Designed for a safer, smarter and more responsive campus.
 
     </div>
     """, unsafe_allow_html=True)
@@ -443,6 +618,7 @@ elif st.session_state.role == "student":
         "Emergency Description",
         placeholder="Describe the emergency clearly..."
     )
+
 
     if st.button(
         "🚨 Send Emergency Alert",
@@ -610,7 +786,7 @@ Emergency Type: {alert[2]}
 
 
     # =====================================================
-    # KPI CARDS
+    # KPI
     # =====================================================
 
     st.subheader("📊 Emergency Overview")
@@ -675,8 +851,6 @@ Emergency Type: {alert[2]}
 
     if reports:
 
-        # Emergency Type
-
         emergency_type_counts = {}
 
         for report in reports:
@@ -698,8 +872,6 @@ Emergency Type: {alert[2]}
             ]
         )
 
-
-        # Priority
 
         priority_counts = {}
 
@@ -723,8 +895,6 @@ Emergency Type: {alert[2]}
         )
 
 
-        # Status
-
         status_counts = {}
 
         for report in reports:
@@ -747,13 +917,11 @@ Emergency Type: {alert[2]}
         )
 
 
-        # =================================================
+        # -------------------------------------------------
         # CHART 1
-        # =================================================
+        # -------------------------------------------------
 
-        st.write(
-            "### 🚨 Emergency Type Distribution"
-        )
+        st.write("### 🚨 Emergency Type Distribution")
 
         fig1 = px.bar(
             type_data,
@@ -785,13 +953,11 @@ Emergency Type: {alert[2]}
         )
 
 
-        # =================================================
+        # -------------------------------------------------
         # CHART 2
-        # =================================================
+        # -------------------------------------------------
 
-        st.write(
-            "### ⚠️ Priority Distribution"
-        )
+        st.write("### ⚠️ Priority Distribution")
 
         fig2 = px.pie(
             priority_data,
@@ -822,13 +988,11 @@ Emergency Type: {alert[2]}
         )
 
 
-        # =================================================
+        # -------------------------------------------------
         # CHART 3
-        # =================================================
+        # -------------------------------------------------
 
-        st.write(
-            "### 🔄 Emergency Status Distribution"
-        )
+        st.write("### 🔄 Emergency Status Distribution")
 
         fig3 = px.bar(
             status_data,
@@ -857,6 +1021,7 @@ Emergency Type: {alert[2]}
             fig3,
             use_container_width=True
         )
+
 
     else:
 
@@ -932,9 +1097,7 @@ Emergency Type: {alert[2]}
             # TEAM ASSIGNMENT
             # -------------------------------------------------
 
-            st.write(
-                "### 👥 Assign Response Team"
-            )
+            st.write("### 👥 Assign Response Team")
 
             teams = [
                 "Unassigned",
@@ -981,9 +1144,7 @@ Emergency Type: {alert[2]}
             # STATUS UPDATE
             # -------------------------------------------------
 
-            st.write(
-               "### 🔄 Update Emergency Status"
-            )
+            st.write("### 🔄 Update Emergency Status")
 
             status_options = [
                 "Pending",
