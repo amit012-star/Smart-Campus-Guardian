@@ -1,11 +1,12 @@
 import streamlit as st
 from datetime import datetime
-
 from database import (
     create_database,
     add_emergency,
     get_emergencies,
-    update_status
+    update_status,
+    authenticate_user
+)
 )
 
 from ai_engine import analyze_emergency
@@ -105,27 +106,27 @@ if not st.session_state.logged_in:
         type="password"
     )
 
-    if st.button("🔐 Login"):
+if st.button("🔐 Login"):
 
-        if username == "student" and password == "1234":
+    role = authenticate_user(
+        username,
+        password
+    )
 
-            st.session_state.logged_in = True
-            st.session_state.role = "student"
+    if role:
 
-            st.rerun()
+        st.session_state.logged_in = True
+        st.session_state.role = role
 
-        elif username == "admin" and password == "admin123":
+        st.success("Login successful!")
 
-            st.session_state.logged_in = True
-            st.session_state.role = "admin"
+        st.rerun()
 
-            st.rerun()
+    else:
 
-        else:
-
-            st.error(
-                "Invalid username or password"
-            )
+        st.error(
+            "Invalid username or password"
+    )
 
 
 # --------------------------------
