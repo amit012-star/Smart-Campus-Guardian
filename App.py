@@ -181,4 +181,243 @@ elif st.session_state.role == "student":
     )
 
     if st.button(
-        "🚨 SEND EMERGENCY ALERT
+        "🚨 SEND EMERGENCY ALERT",
+        use_container_width=True
+    ):
+
+        if name and location_details and description:
+
+            priority, action = analyze_emergency(
+                emergency_type,
+                description
+            )
+
+            created_at = datetime.now().strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+            add_emergency(
+                name,
+                emergency_type,
+                location,
+                location_details,
+                description,
+                priority,
+                "Pending",
+                created_at
+            )
+
+            st.success(
+                "✅ Emergency alert submitted successfully!"
+            )
+
+            st.header("🤖 AI Emergency Analysis")
+
+            st.metric(
+                "⚠️ Priority",
+                priority
+            )
+
+            st.info(
+                f"🩺 **Recommended Action:** {action}"
+            )
+
+        else:
+
+            st.warning(
+                "⚠️ Please fill all fields before submitting."
+            )
+
+    st.divider()
+
+    if st.button("🚪 Logout"):
+
+        st.session_state.logged_in = False
+        st.session_state.role = ""
+
+        st.rerun()
+
+
+# =====================================================
+# ADMIN DASHBOARD
+# =====================================================
+
+elif st.session_state.role == "admin":
+
+    st.title("🛡️ Admin Safety Dashboard")
+
+    st.caption(
+        "📊 Central control panel for campus emergency management."
+    )
+
+    reports = get_emergencies()
+
+    st.divider()
+
+    # =================================================
+    # STATISTICS
+    # =================================================
+
+    st.header("📊 Emergency Overview")
+
+    total = len(reports)
+
+    critical = sum(
+        1 for r in reports if r[6] == "CRITICAL"
+    )
+
+    important = sum(
+        1 for r in reports if r[6] == "IMPORTANT"
+    )
+
+    normal = sum(
+        1 for r in reports if r[6] == "NORMAL"
+    )
+
+    pending = sum(
+        1 for r in reports if r[7] == "Pending"
+    )
+
+    resolved = sum(
+        1 for r in reports if r[7] == "Resolved"
+    )
+
+    c1, c2, c3, c4, c5 = st.columns(5)
+
+    c1.metric("📋 Total", total)
+    c2.metric("🔴 Critical", critical)
+    c3.metric("🟠 Important", important)
+    c4.metric("🟢 Normal", normal)
+    c5.metric("⏳ Pending", pending)
+
+    st.divider()
+
+    # =================================================
+    # ANALYTICS
+    # =================================================
+
+    st.header("📈 Emergency Analytics")
+
+    if reports:
+
+        type_count = {}
+
+        for r in reports:
+            type_count[r[2]] = type_count.get(r[2], 0) + 1
+
+        df = pd.DataFrame(
+            type_count.items(),
+            columns=["Emergency Type", "Count"]
+        )
+
+        fig = px.bar(
+            df,
+            x="Emergency Type",
+            y="Count",
+            text="Count",
+            title="🚨 Emergency Type Distribution"
+        )
+
+        fig.update_traces(
+            textposition="outside"
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
+
+    else:
+
+        st.info(
+            "📊 No emergency reports available yet."
+        )
+
+    st.divider()
+
+    # =================================================
+    # REPORTS
+    # =================================================
+
+    st.header("🚨 Emergency Reports")
+
+    if not reports:
+
+        st.info("📭 No reports available.")
+
+    for r in reports:
+
+        with st.expander(
+            f"🚨 Report #{r[0]} | {r[2]} | ⚠️ {r[6]}"
+        ):
+
+            st.write("👤 **Student:**", r[1])
+            st.write("🚨 **Emergency:**", r[2])
+            st.write("📍 **Location:**", r[3])
+            st.write("📌 **Details:**", r[4])
+            st.write("📝 **Description:**", r[5])
+            st.write("⚠️ **Priority:**", r[6])
+            st.write("🔄 **Status:**", r[7])
+            st.write("🕐 **Reported:**", r[8])
+            st.write("👥 **Team:**", r[9])
+
+            st.divider()
+
+            teams = [
+                "Unassigned",
+                "Medical Team",
+                "Security Team",
+                "Fire Response Team",
+                "Maintenance Team"
+            ]
+
+            team = st.selectbox(
+                "👥 Response Team",
+                teams,
+                key=f"team_{r[0]}"
+            )
+
+            if st.button(
+                "👥 Assign Team",
+                key=f"assign_{r[0]}"
+            ):
+
+                assign_team(r[0], team)
+
+                st.success(
+                    "✅ Response team assigned!"
+                )
+
+                st.rerun()
+
+            status = st.selectbox(
+                "🔄 Update Status",
+                [
+                    "Pending",
+                    "Responded",
+                    "Resolved"
+                ],
+                key=f"status_{r[0]}"
+            )
+
+            if st.button(
+                "✅ Update Status",
+                key=f"update_{r[0]}"
+            ):
+
+                update_status(r[0], status)
+
+                st.success(
+                    "✅ Status updated successfully!"
+                )
+
+                st.rerun()
+
+    st.divider()
+
+    if st.button("🚪 Logout"):
+
+        st.session_state.logged_in = False
+        st.session_state.role = ""
+
+        st.rerun()
