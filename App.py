@@ -1,12 +1,6 @@
 import streamlit as st
 from datetime import datetime
-
-from database import create_database, add_emergency
-
-
-# ---------------------------------
-# Page Configuration
-# ---------------------------------
+from database import create_database, add_emergency, get_emergencies
 
 st.set_page_config(
     page_title="Smart Campus Guardian",
@@ -14,23 +8,12 @@ st.set_page_config(
     layout="wide"
 )
 
-
-# ---------------------------------
-# Create Database
-# ---------------------------------
-
 create_database()
 
 
-# ---------------------------------
-# Priority Function
-# ---------------------------------
-
 def calculate_priority(emergency_type, description):
 
-    text = (
-        emergency_type + " " + description
-    ).lower()
+    text = (emergency_type + " " + description).lower()
 
     critical_words = [
         "fire",
@@ -42,7 +25,6 @@ def calculate_priority(emergency_type, description):
     ]
 
     for word in critical_words:
-
         if word in text:
             return "CRITICAL"
 
@@ -51,10 +33,6 @@ def calculate_priority(emergency_type, description):
 
     return "NORMAL"
 
-
-# ---------------------------------
-# Login Page
-# ---------------------------------
 
 def login_page():
 
@@ -68,10 +46,7 @@ def login_page():
 
     st.header("🔐 Login")
 
-    username = st.text_input(
-        "Username"
-    )
-
+    username = st.text_input("Username")
     password = st.text_input(
         "Password",
         type="password"
@@ -83,54 +58,29 @@ def login_page():
 
             st.session_state.logged_in = True
             st.session_state.role = "student"
-
-            st.success(
-                "Student login successful!"
-            )
-
             st.rerun()
 
         elif username == "admin" and password == "admin123":
 
             st.session_state.logged_in = True
             st.session_state.role = "admin"
-
-            st.success(
-                "Admin login successful!"
-            )
-
             st.rerun()
 
         else:
+            st.error("Invalid username or password.")
 
-            st.error(
-                "Invalid username or password."
-            )
-
-
-# ---------------------------------
-# Student Dashboard
-# ---------------------------------
 
 def student_dashboard():
 
     st.title("🎓 Student Dashboard")
 
-    st.success(
-        "Welcome to Smart Campus Guardian!"
-    )
+    st.success("Welcome to Smart Campus Guardian!")
 
     st.divider()
 
     st.header("🆘 Emergency Report")
 
-    st.write(
-        "Report a campus emergency using the form below."
-    )
-
-    student_name = st.text_input(
-        "Student Name"
-    )
+    student_name = st.text_input("Student Name")
 
     emergency_type = st.selectbox(
         "Emergency Type",
@@ -160,18 +110,12 @@ def student_dashboard():
         "Describe the Emergency"
     )
 
-    if st.button(
-        "🚨 SEND EMERGENCY ALERT"
-    ):
+    if st.button("🚨 SEND EMERGENCY ALERT"):
 
         if student_name.strip() == "":
-
-            st.warning(
-                "Please enter your name."
-            )
+            st.warning("Please enter your name.")
 
         elif description.strip() == "":
-
             st.warning(
                 "Please describe the emergency."
             )
@@ -213,51 +157,123 @@ def student_dashboard():
 
         st.session_state.logged_in = False
         st.session_state.role = None
-
         st.rerun()
 
-
-# ---------------------------------
-# Admin Dashboard
-# ---------------------------------
 
 def admin_dashboard():
 
     st.title("🛡️ Admin Dashboard")
 
-    st.success(
-        "Welcome, Administrator!"
+    st.success("Welcome, Administrator!")
+
+    reports = get_emergencies()
+
+    total_reports = len(reports)
+
+    critical_cases = sum(
+        1 for report in reports
+        if report[5] == "CRITICAL"
     )
 
-    st.info(
-        "Emergency reports will be displayed here."
+    pending_cases = sum(
+        1 for report in reports
+        if report[6] == "Pending"
     )
+
+    resolved_cases = sum(
+        1 for report in reports
+        if report[6] == "Resolved"
+    )
+
+    st.divider()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "📊 Total Reports",
+            total_reports
+        )
+
+    with col2:
+        st.metric(
+            "🚨 Critical Cases",
+            critical_cases
+        )
+
+    with col3:
+        st.metric(
+            "⏳ Pending Cases",
+            pending_cases
+        )
+
+    with col4:
+        st.metric(
+            "✅ Resolved Cases",
+            resolved_cases
+        )
+
+    st.divider()
+
+    st.header("📋 Emergency Reports")
+
+    if len(reports) == 0:
+
+        st.info(
+            "No emergency reports available."
+        )
+
+    else:
+
+        for report in reports:
+
+            st.subheader(
+                f"🚨 Report #{report[0]}"
+            )
+
+            st.write(
+                f"**Student:** {report[1]}"
+            )
+
+            st.write(
+                f"**Emergency Type:** {report[2]}"
+            )
+
+            st.write(
+                f"**Location:** {report[3]}"
+            )
+
+            st.write(
+                f"**Description:** {report[4]}"
+            )
+
+            st.write(
+                f"**Priority:** {report[5]}"
+            )
+
+            st.write(
+                f"**Status:** {report[6]}"
+            )
+
+            st.write(
+                f"**Time:** {report[7]}"
+            )
+
+            st.divider()
 
     if st.button("Logout"):
 
         st.session_state.logged_in = False
         st.session_state.role = None
-
         st.rerun()
 
 
-# ---------------------------------
-# Session State
-# ---------------------------------
-
 if "logged_in" not in st.session_state:
-
     st.session_state.logged_in = False
 
-
 if "role" not in st.session_state:
-
     st.session_state.role = None
 
-
-# ---------------------------------
-# Application
-# ---------------------------------
 
 if not st.session_state.logged_in:
 
