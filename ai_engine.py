@@ -55,4 +55,4 @@ def analyze_emergency(emergency_type, description):
     return (
         "NORMAL",
         "Review the report and take appropriate action."
-  )
+    )
