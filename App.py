@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from database import(
+from database import (
        create_database,
        add_emergency,
        get_emergencies,
