@@ -1,19 +1,35 @@
 import streamlit as st
 from datetime import datetime
+
 from database import (
-       create_database,
-       add_emergency,
-       get_emergencies,
-       update_status
+    create_database,
+    add_emergency,
+    get_emergencies,
+    update_status
 )
+
+
+# --------------------------------
+# PAGE SETTINGS
+# --------------------------------
+
 st.set_page_config(
     page_title="Smart Campus Guardian",
-    page_icon="🚨",
+    page_icon="🛡️",
     layout="wide"
 )
 
+
+# --------------------------------
+# CREATE DATABASE
+# --------------------------------
+
 create_database()
 
+
+# --------------------------------
+# PRIORITY SYSTEM
+# --------------------------------
 
 def calculate_priority(emergency_type, description):
 
@@ -54,74 +70,80 @@ def calculate_priority(emergency_type, description):
 
     return "NORMAL"
 
-    text = (emergency_type + " " + description).lower()
 
-    critical_words = [
-        "fire",
-        "accident",
-        "unconscious",
-        "serious",
-        "bleeding",
-        "danger"
-    ]
+# --------------------------------
+# SESSION STATE
+# --------------------------------
 
-    for word in critical_words:
-        if word in text:
-            return "CRITICAL"
+if "logged_in" not in st.session_state:
 
-    if emergency_type in ["Medical", "Accident", "Security"]:
-        return "IMPORTANT"
-
-    return "NORMAL"
+    st.session_state.logged_in = False
 
 
-def login_page():
+if "role" not in st.session_state:
 
-    st.title("🚨 Smart Campus Guardian")
+    st.session_state.role = ""
+
+
+# --------------------------------
+# LOGIN PAGE
+# --------------------------------
+
+if not st.session_state.logged_in:
+
+    st.title("🛡️ Smart Campus Guardian")
 
     st.subheader(
-        "AI-Based College Emergency & Safety Management System"
+        "College Emergency & Safety Management System"
     )
 
-    st.divider()
+    username = st.text_input(
+        "Username"
+    )
 
-    st.header("🔐 Login")
-
-    username = st.text_input("Username")
     password = st.text_input(
         "Password",
         type="password"
     )
 
-    if st.button("Login"):
+    if st.button("🔐 Login"):
 
         if username == "student" and password == "1234":
 
             st.session_state.logged_in = True
             st.session_state.role = "student"
+
             st.rerun()
 
         elif username == "admin" and password == "admin123":
 
             st.session_state.logged_in = True
             st.session_state.role = "admin"
+
             st.rerun()
 
         else:
-            st.error("Invalid username or password.")
+
+            st.error(
+                "Invalid username or password"
+            )
 
 
-def student_dashboard():
+# --------------------------------
+# STUDENT DASHBOARD
+# --------------------------------
 
-    st.title("🎓 Student Dashboard")
+elif st.session_state.role == "student":
 
-    st.success("Welcome to Smart Campus Guardian!")
+    st.title("🎓 Student Emergency Dashboard")
 
-    st.divider()
+    st.write(
+        "Report any emergency or safety issue on campus."
+    )
 
-    st.header("🆘 Emergency Report")
-
-    student_name = st.text_input("Student Name")
+    student_name = st.text_input(
+        "Student Name"
+    )
 
     emergency_type = st.selectbox(
         "Emergency Type",
@@ -135,7 +157,7 @@ def student_dashboard():
     )
 
     location = st.selectbox(
-        "Campus Location",
+        "📍 Campus Location",
         [
             "Computer Lab",
             "Block A",
@@ -146,33 +168,30 @@ def student_dashboard():
             "Workshop"
         ]
     )
-     location_details = st.text_input(
+
+    location_details = st.text_input(
         "📍 Location Details",
-        placeholder="Example: 2nd floor,
-     near Room 204"
+        placeholder="Example: 2nd floor, near Room 204"
     )
+
     description = st.text_area(
-        "Describe the Emergency"
+        "Emergency Description",
+        placeholder="Describe the emergency clearly..."
     )
 
-    if st.button("🚨 SEND EMERGENCY ALERT"):
+    if st.button("🚨 Send Emergency Alert"):
 
-        if student_name.strip() == "":
-            st.warning("Please enter your name.")
-
-        elif description.strip() == "":
-            st.warning(
-                "Please describe the emergency."
-            )
-
-        else:
+        if (
+            student_name
+            and location
+            and location_details
+            and description
+        ):
 
             priority = calculate_priority(
                 emergency_type,
                 description
             )
-
-            status = "Pending"
 
             created_at = datetime.now().strftime(
                 "%Y-%m-%d %H:%M:%S"
@@ -182,87 +201,92 @@ def student_dashboard():
                 student_name,
                 emergency_type,
                 location,
+                location_details,
                 description,
                 priority,
-                status,
+                "Pending",
                 created_at
             )
 
             st.success(
-                "🚨 Emergency report submitted successfully!"
+                "Emergency alert submitted successfully!"
             )
 
             st.info(
-                f"Priority assigned: {priority}"
+                f"Priority detected: {priority}"
             )
 
-    st.divider()
+        else:
+
+            st.warning(
+                "Please fill all fields."
+            )
 
     if st.button("Logout"):
 
         st.session_state.logged_in = False
-        st.session_state.role = None
+        st.session_state.role = ""
+
         st.rerun()
 
 
-def admin_dashboard():
+# --------------------------------
+# ADMIN DASHBOARD
+# --------------------------------
 
-    st.title("🛡️ Admin Dashboard")
+elif st.session_state.role == "admin":
 
-    st.success("Welcome, Administrator!")
+    st.title("🛡️ Admin Safety Dashboard")
 
     reports = get_emergencies()
 
     total_reports = len(reports)
 
     critical_cases = sum(
-        1 for report in reports
-        if report[5] == "CRITICAL"
+        1
+        for report in reports
+        if report[6] == "CRITICAL"
     )
 
     pending_cases = sum(
-        1 for report in reports
-        if report[6] == "Pending"
+        1
+        for report in reports
+        if report[7] == "Pending"
     )
 
     resolved_cases = sum(
-        1 for report in reports
-        if report[6] == "Resolved"
+        1
+        for report in reports
+        if report[7] == "Resolved"
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "Total Reports",
+        total_reports
+    )
+
+    col2.metric(
+        "Critical Cases",
+        critical_cases
+    )
+
+    col3.metric(
+        "Pending",
+        pending_cases
+    )
+
+    col4.metric(
+        "Resolved",
+        resolved_cases
     )
 
     st.divider()
 
-    col1, col2, col3, col4 = st.columns(4)
+    st.subheader("🚨 Emergency Reports")
 
-    with col1:
-        st.metric(
-            "📊 Total Reports",
-            total_reports
-        )
-
-    with col2:
-        st.metric(
-            "🚨 Critical Cases",
-            critical_cases
-        )
-
-    with col3:
-        st.metric(
-            "⏳ Pending Cases",
-            pending_cases
-        )
-
-    with col4:
-        st.metric(
-            "✅ Resolved Cases",
-            resolved_cases
-        )
-
-    st.divider()
-
-    st.header("📋 Emergency Reports")
-
-    if len(reports) == 0:
+    if not reports:
 
         st.info(
             "No emergency reports available."
@@ -272,8 +296,10 @@ def admin_dashboard():
 
         for report in reports:
 
-            st.subheader(
-                f"🚨 Report #{report[0]}"
+            st.markdown("---")
+
+            st.write(
+                f"### 🚨 Report #{report[0]}"
             )
 
             st.write(
@@ -285,69 +311,63 @@ def admin_dashboard():
             )
 
             st.write(
-                f"**Location:** {report[3]}"
+                f"**Campus Location:** {report[3]}"
             )
 
             st.write(
-                f"**Description:** {report[4]}"
+                f"**Location Details:** {report[4]}"
             )
 
             st.write(
-                f"**Priority:** {report[5]}"
+                f"**Description:** {report[5]}"
             )
 
             st.write(
-                f"**Status:** {report[6]}"
+                f"**Priority:** {report[6]}"
             )
+
+            st.write(
+                f"**Current Status:** {report[7]}"
+            )
+
+            st.write(
+                f"**Reported At:** {report[8]}"
+            )
+
             new_status = st.selectbox(
                 "Update Status",
-                ["Pending", "Responded", "Resolved"],
-                index=["Pending", "Responded", "Resolved"].index(report[6]),
+                [
+                    "Pending",
+                    "Responded",
+                    "Resolved"
+                ],
+                index=[
+                    "Pending",
+                    "Responded",
+                    "Resolved"
+                ].index(report[7]),
                 key=f"status_{report[0]}"
             )
 
             if st.button(
-               "Update Status",
+                "Update Status",
                 key=f"update_{report[0]}"
             ):
 
                 update_status(
-                   report[0],
-                   new_status
+                    report[0],
+                    new_status
                 )
 
-                st.success("Status updated successfully!")
+                st.success(
+                    "Status updated successfully!"
+                )
 
                 st.rerun()
-
-            st.write(
-                f"**Time:** {report[7]}"
-            )
-
-            st.divider()
 
     if st.button("Logout"):
 
         st.session_state.logged_in = False
-        st.session_state.role = None
+        st.session_state.role = ""
+
         st.rerun()
-
-
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-
-if "role" not in st.session_state:
-    st.session_state.role = None
-
-
-if not st.session_state.logged_in:
-
-    login_page()
-
-elif st.session_state.role == "student":
-
-    student_dashboard()
-
-elif st.session_state.role == "admin":
-
-    admin_dashboard()
