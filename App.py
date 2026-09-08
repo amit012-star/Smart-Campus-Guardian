@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+
 from database import (
     create_database,
     add_emergency,
@@ -27,50 +28,6 @@ st.set_page_config(
 # --------------------------------
 
 create_database()
-
-
-# --------------------------------
-# PRIORITY SYSTEM
-# --------------------------------
-
-def calculate_priority(emergency_type, description):
-
-    text = (
-        emergency_type + " " + description
-    ).lower()
-
-    critical_words = [
-        "fire",
-        "accident",
-        "unconscious",
-        "serious",
-        "bleeding",
-        "danger",
-        "emergency",
-        "critical"
-    ]
-
-    important_words = [
-        "injury",
-        "injured",
-        "pain",
-        "security",
-        "threat",
-        "medical",
-        "help"
-    ]
-
-    for word in critical_words:
-
-        if word in text:
-            return "CRITICAL"
-
-    for word in important_words:
-
-        if word in text:
-            return "IMPORTANT"
-
-    return "NORMAL"
 
 
 # --------------------------------
@@ -105,27 +62,29 @@ if not st.session_state.logged_in:
         type="password"
     )
 
-if st.button("🔐 Login"):
+    if st.button("🔐 Login"):
 
-    role = authenticate_user(
-        username,
-        password
-    )
+        role = authenticate_user(
+            username,
+            password
+        )
 
-    if role:
+        if role:
 
-        st.session_state.logged_in = True
-        st.session_state.role = role
+            st.session_state.logged_in = True
+            st.session_state.role = role
 
-        st.success("Login successful!")
+            st.success(
+                "Login successful!"
+            )
 
-        st.rerun()
+            st.rerun()
 
-    else:
+        else:
 
-        st.error(
-            "Invalid username or password"
-    )
+            st.error(
+                "Invalid username or password"
+            )
 
 
 # --------------------------------
@@ -187,20 +146,19 @@ elif st.session_state.role == "student":
             and description
         ):
 
-            # AI emergency analysis
+            # AI analysis
             ai_priority, recommended_action = analyze_emergency(
                 emergency_type,
                 description
             )
 
-            # Save AI priority
             priority = ai_priority
 
             created_at = datetime.now().strftime(
                 "%Y-%m-%d %H:%M:%S"
             )
 
-            # Save emergency report
+            # Save emergency
             add_emergency(
                 student_name,
                 emergency_type,
@@ -216,10 +174,7 @@ elif st.session_state.role == "student":
                 "Emergency alert submitted successfully!"
             )
 
-            # --------------------------------
-            # AI ANALYSIS RESULT
-            # --------------------------------
-
+            # AI result
             st.subheader(
                 "🤖 AI Emergency Analysis"
             )
@@ -256,8 +211,9 @@ elif st.session_state.role == "admin":
 
     reports = get_emergencies()
 
+
     # --------------------------------
-    # ANALYTICS
+    # BASIC ANALYTICS
     # --------------------------------
 
     total_reports = len(reports)
@@ -292,9 +248,12 @@ elif st.session_state.role == "admin":
         if report[7] == "Resolved"
     )
 
+
     # --------------------------------
     # ANALYTICS CARDS
     # --------------------------------
+
+    st.subheader("📊 Emergency Overview")
 
     col1, col2, col3 = st.columns(3)
 
@@ -313,6 +272,7 @@ elif st.session_state.role == "admin":
         important_cases
     )
 
+
     col1, col2, col3 = st.columns(3)
 
     col1.metric(
@@ -330,7 +290,74 @@ elif st.session_state.role == "admin":
         resolved_cases
     )
 
+
     st.divider()
+
+
+    # --------------------------------
+    # ANALYTICS CHARTS
+    # --------------------------------
+
+    st.subheader(
+        "📈 Emergency Analytics"
+    )
+
+    if reports:
+
+        # Emergency type counts
+        emergency_type_counts = {}
+
+        for report in reports:
+
+            emergency_type = report[2]
+
+            if emergency_type not in emergency_type_counts:
+
+                emergency_type_counts[emergency_type] = 0
+
+            emergency_type_counts[emergency_type] += 1
+
+
+        st.write(
+            "### 🚨 Emergency Type Distribution"
+        )
+
+        st.bar_chart(
+            emergency_type_counts
+        )
+
+
+        # Priority counts
+        priority_counts = {}
+
+        for report in reports:
+
+            priority = report[6]
+
+            if priority not in priority_counts:
+
+                priority_counts[priority] = 0
+
+            priority_counts[priority] += 1
+
+
+        st.write(
+            "### ⚠️ Priority Distribution"
+        )
+
+        st.bar_chart(
+            priority_counts
+        )
+
+    else:
+
+        st.info(
+            "Charts will appear after emergency reports are submitted."
+        )
+
+
+    st.divider()
+
 
     # --------------------------------
     # EMERGENCY REPORTS
@@ -388,6 +415,9 @@ elif st.session_state.role == "admin":
                 f"**Reported At:** {report[8]}"
             )
 
+
+            # Status update
+
             new_status = st.selectbox(
                 "Update Status",
                 [
@@ -402,6 +432,7 @@ elif st.session_state.role == "admin":
                 ].index(report[7]),
                 key=f"status_{report[0]}"
             )
+
 
             if st.button(
                 "Update Status",
@@ -418,6 +449,7 @@ elif st.session_state.role == "admin":
                 )
 
                 st.rerun()
+
 
     # --------------------------------
     # LOGOUT
