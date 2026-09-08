@@ -22,8 +22,124 @@ from ai_engine import analyze_emergency
 st.set_page_config(
     page_title="Smart Campus Guardian",
     page_icon="🛡️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
+
+
+# =========================================================
+# CUSTOM CSS
+# =========================================================
+
+st.markdown("""
+<style>
+
+.main {
+    padding-top: 0rem;
+}
+
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+
+/* Main Hero */
+
+.hero {
+    padding: 45px 30px;
+    border-radius: 25px;
+    text-align: center;
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a,
+        #2563eb
+    );
+    color: white;
+    margin-bottom: 25px;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.18);
+}
+
+.hero-icon {
+    font-size: 65px;
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+.hero-subtitle {
+    font-size: 19px;
+    opacity: 0.92;
+    margin-top: 10px;
+}
+
+
+/* Feature Cards */
+
+.feature-card {
+    padding: 22px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    min-height: 150px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.06);
+}
+
+.feature-icon {
+    font-size: 35px;
+}
+
+.feature-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.feature-text {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+
+/* Login Card */
+
+.login-card {
+    padding: 25px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.08);
+}
+
+
+/* Footer */
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* Section Title */
+
+.section-title {
+    text-align: center;
+    font-size: 25px;
+    font-weight: 750;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 # =========================================================
@@ -45,52 +161,233 @@ if "role" not in st.session_state:
 
 
 # =========================================================
-# LOGIN PAGE
+# ATTRACTIVE FRONT / LOGIN SCREEN
 # =========================================================
 
 if not st.session_state.logged_in:
 
-    st.title("🛡️ Smart Campus Guardian")
+    # -----------------------------------------------------
+    # HERO SECTION
+    # -----------------------------------------------------
 
-    st.subheader(
-        "College Emergency & Safety Management System"
+    st.markdown("""
+    <div class="hero">
+
+        <div class="hero-icon">🛡️</div>
+
+        <div class="hero-title">
+            Smart Campus Guardian
+        </div>
+
+        <div class="hero-subtitle">
+            AI-Based College Emergency & Safety Management System
+        </div>
+
+        <div style="margin-top:18px; font-size:15px;">
+            🚨 Report • 🤖 Analyze • 👥 Respond • 📊 Monitor
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    # -----------------------------------------------------
+    # WELCOME MESSAGE
+    # -----------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">Welcome to Smart Campus Safety</div>',
+        unsafe_allow_html=True
     )
 
     st.write(
-        "A smart platform for reporting, managing and responding "
-        "to campus emergencies."
+        "A centralized digital platform designed to help students "
+        "report emergencies quickly and help campus administrators "
+        "manage emergency response efficiently."
     )
 
-    st.divider()
 
-    username = st.text_input("Username")
+    st.write("")
 
-    password = st.text_input(
-        "Password",
-        type="password"
+
+    # -----------------------------------------------------
+    # FEATURE CARDS
+    # -----------------------------------------------------
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        st.markdown("""
+        <div class="feature-card">
+
+            <div class="feature-icon">🚨</div>
+
+            <div class="feature-title">
+                Emergency Reporting
+            </div>
+
+            <div class="feature-text">
+                Quickly report medical, fire, security and other emergencies.
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    with col2:
+
+        st.markdown("""
+        <div class="feature-card">
+
+            <div class="feature-icon">🤖</div>
+
+            <div class="feature-title">
+                AI Analysis
+            </div>
+
+            <div class="feature-text">
+                Automatically analyze emergency priority and suggest action.
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    with col3:
+
+        st.markdown("""
+        <div class="feature-card">
+
+            <div class="feature-icon">👥</div>
+
+            <div class="feature-title">
+                Response Teams
+            </div>
+
+            <div class="feature-text">
+                Assign the appropriate campus response team to each report.
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    with col4:
+
+        st.markdown("""
+        <div class="feature-card">
+
+            <div class="feature-icon">📊</div>
+
+            <div class="feature-title">
+                Smart Analytics
+            </div>
+
+            <div class="feature-text">
+                Monitor emergency trends, priority and response status.
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    st.write("")
+    st.write("")
+
+
+    # -----------------------------------------------------
+    # LOGIN SECTION
+    # -----------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">🔐 Secure Login</div>',
+        unsafe_allow_html=True
     )
 
-    if st.button("🔐 Login"):
+    login_col1, login_col2, login_col3 = st.columns(
+        [1, 2, 1]
+    )
 
-        role = authenticate_user(
-            username,
-            password
+    with login_col2:
+
+        st.markdown(
+            '<div class="login-card">',
+            unsafe_allow_html=True
         )
 
-        if role:
+        username = st.text_input(
+            "👤 Username",
+            placeholder="Enter your username"
+        )
 
-            st.session_state.logged_in = True
-            st.session_state.role = role
+        password = st.text_input(
+            "🔑 Password",
+            type="password",
+            placeholder="Enter your password"
+        )
 
-            st.success("Login successful!")
+        login_button = st.button(
+            "🚀 Login to Smart Campus Guardian",
+            use_container_width=True
+        )
 
-            st.rerun()
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
+        )
 
-        else:
 
-            st.error(
-                "Invalid username or password."
+        if login_button:
+
+            role = authenticate_user(
+                username,
+                password
             )
+
+            if role:
+
+                st.session_state.logged_in = True
+                st.session_state.role = role
+
+                st.success(
+                    "Login successful!"
+                )
+
+                st.rerun()
+
+            else:
+
+                st.error(
+                    "❌ Invalid username or password."
+                )
+
+
+    # -----------------------------------------------------
+    # SECURITY MESSAGE
+    # -----------------------------------------------------
+
+    st.write("")
+
+    st.info(
+        "🔒 Your emergency information is stored securely "
+        "and can be managed by authorized campus administrators."
+    )
+
+
+    # -----------------------------------------------------
+    # FOOTER
+    # -----------------------------------------------------
+
+    st.markdown("""
+    <div class="footer">
+
+        🛡️ Smart Campus Guardian<br>
+        AI-Based College Emergency & Safety Management System<br><br>
+        Designed for a safer and smarter campus
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =========================================================
@@ -147,7 +444,10 @@ elif st.session_state.role == "student":
         placeholder="Describe the emergency clearly..."
     )
 
-    if st.button("🚨 Send Emergency Alert"):
+    if st.button(
+        "🚨 Send Emergency Alert",
+        use_container_width=True
+    ):
 
         if (
             student_name
@@ -195,8 +495,9 @@ elif st.session_state.role == "student":
         else:
 
             st.warning(
-                "Please fill all fields."
+                "⚠️ Please fill all fields."
             )
+
 
     st.divider()
 
@@ -224,7 +525,7 @@ elif st.session_state.role == "admin":
 
 
     # =====================================================
-    # CRITICAL ALERTS
+    # CRITICAL ALERT
     # =====================================================
 
     critical_alerts = [
@@ -331,6 +632,7 @@ Emergency Type: {alert[2]}
         important_cases
     )
 
+
     col1, col2, col3 = st.columns(3)
 
     col1.metric(
@@ -347,6 +649,7 @@ Emergency Type: {alert[2]}
         "🟠 Responded",
         responded_cases
     )
+
 
     col1, col2 = st.columns(2)
 
@@ -365,16 +668,14 @@ Emergency Type: {alert[2]}
 
 
     # =====================================================
-    # PROFESSIONAL ANALYTICS
+    # ANALYTICS
     # =====================================================
 
     st.subheader("📈 Emergency Analytics")
 
     if reports:
 
-        # -------------------------------------------------
-        # EMERGENCY TYPE DATA
-        # -------------------------------------------------
+        # Emergency Type
 
         emergency_type_counts = {}
 
@@ -391,13 +692,14 @@ Emergency Type: {alert[2]}
 
         type_data = pd.DataFrame(
             list(emergency_type_counts.items()),
-            columns=["Emergency Type", "Count"]
+            columns=[
+                "Emergency Type",
+                "Count"
+            ]
         )
 
 
-        # -------------------------------------------------
-        # PRIORITY DATA
-        # -------------------------------------------------
+        # Priority
 
         priority_counts = {}
 
@@ -414,13 +716,14 @@ Emergency Type: {alert[2]}
 
         priority_data = pd.DataFrame(
             list(priority_counts.items()),
-            columns=["Priority", "Count"]
+            columns=[
+                "Priority",
+                "Count"
+            ]
         )
 
 
-        # -------------------------------------------------
-        # STATUS DATA
-        # -------------------------------------------------
+        # Status
 
         status_counts = {}
 
@@ -437,15 +740,20 @@ Emergency Type: {alert[2]}
 
         status_data = pd.DataFrame(
             list(status_counts.items()),
-            columns=["Status", "Count"]
+            columns=[
+                "Status",
+                "Count"
+            ]
         )
 
 
         # =================================================
-        # EMERGENCY TYPE BAR CHART
+        # CHART 1
         # =================================================
 
-        st.write("### 🚨 Emergency Type Distribution")
+        st.write(
+            "### 🚨 Emergency Type Distribution"
+        )
 
         fig1 = px.bar(
             type_data,
@@ -478,10 +786,12 @@ Emergency Type: {alert[2]}
 
 
         # =================================================
-        # PRIORITY DONUT CHART
+        # CHART 2
         # =================================================
 
-        st.write("### ⚠️ Priority Distribution")
+        st.write(
+            "### ⚠️ Priority Distribution"
+        )
 
         fig2 = px.pie(
             priority_data,
@@ -513,10 +823,12 @@ Emergency Type: {alert[2]}
 
 
         # =================================================
-        # STATUS BAR CHART
+        # CHART 3
         # =================================================
 
-        st.write("### 🔄 Emergency Status Distribution")
+        st.write(
+            "### 🔄 Emergency Status Distribution"
+        )
 
         fig3 = px.bar(
             status_data,
@@ -545,7 +857,6 @@ Emergency Type: {alert[2]}
             fig3,
             use_container_width=True
         )
-
 
     else:
 
@@ -617,9 +928,9 @@ Emergency Type: {alert[2]}
             )
 
 
-            # =================================================
+            # -------------------------------------------------
             # TEAM ASSIGNMENT
-            # =================================================
+            # -------------------------------------------------
 
             st.write(
                 "### 👥 Assign Response Team"
@@ -666,62 +977,9 @@ Emergency Type: {alert[2]}
                 st.rerun()
 
 
-            # =================================================
+            # -------------------------------------------------
             # STATUS UPDATE
-            # =================================================
+            # -------------------------------------------------
 
             st.write(
-                "### 🔄 Update Emergency Status"
-            )
-
-            status_options = [
-                "Pending",
-                "Responded",
-                "Resolved"
-            ]
-
-            current_status = report[7]
-
-            if current_status not in status_options:
-
-                current_status = "Pending"
-
-
-            new_status = st.selectbox(
-                "Select Status",
-                status_options,
-                index=status_options.index(current_status),
-                key=f"status_{report[0]}"
-            )
-
-
-            if st.button(
-                "🔄 Update Status",
-                key=f"update_{report[0]}"
-            ):
-
-                update_status(
-                    report[0],
-                    new_status
-                )
-
-                st.success(
-                    "Status updated successfully!"
-                )
-
-                st.rerun()
-
-
-    st.divider()
-
-
-    # =====================================================
-    # LOGOUT
-    # =====================================================
-
-    if st.button("Logout"):
-
-        st.session_state.logged_in = False
-        st.session_state.role = ""
-
-        st.rerun()
+                "### ?
