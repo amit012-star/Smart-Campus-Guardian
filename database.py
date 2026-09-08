@@ -1,4 +1,12 @@
 import sqlite3
+import hashlib
+
+
+def hash_password(password):
+
+    return hashlib.sha256(
+        password.encode()
+    ).hexdigest()
 
 
 def create_database():
@@ -19,19 +27,89 @@ def create_database():
         )
     """)
 
-    # Check existing columns
     cursor.execute("PRAGMA table_info(emergencies)")
     columns = [column[1] for column in cursor.fetchall()]
 
-    # Add location_details to old database
     if "location_details" not in columns:
+
         cursor.execute("""
             ALTER TABLE emergencies
             ADD COLUMN location_details TEXT
         """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL
+        )
+    """)
+
+    cursor.execute(
+        "SELECT * FROM users WHERE username = ?",
+        ("student",)
+    )
+
+    if cursor.fetchone() is None:
+
+        cursor.execute("""
+            INSERT INTO users
+            (username, password, role)
+            VALUES (?, ?, ?)
+        """, (
+            "student",
+            hash_password("1234"),
+            "student"
+        ))
+
+    cursor.execute(
+        "SELECT * FROM users WHERE username = ?",
+        ("admin",)
+    )
+
+    if cursor.fetchone() is None:
+
+        cursor.execute("""
+            INSERT INTO users
+            (username, password, role)
+            VALUES (?, ?, ?)
+        """, (
+            "admin",
+            hash_password("admin123"),
+            "admin"
+        ))
+
     connection.commit()
     connection.close()
+
+
+def authenticate_user(username, password):
+
+    connection = sqlite3.connect("emergency.db")
+    cursor = connection.cursor()
+
+    hashed_password = hash_password(password)
+
+    cursor.execute("""
+        SELECT role
+        FROM users
+        WHERE username = ?
+        AND password = ?
+    """, (
+        username,
+        hashed_password
+    ))
+
+    result = cursor.fetchone()
+
+    connection.close()
+
+    if result:
+
+        return result[0]
+
+    return None
 
 
 def add_emergency(
@@ -112,7 +190,10 @@ def update_status(report_id, new_status):
         UPDATE emergencies
         SET status = ?
         WHERE id = ?
-    """, (new_status, report_id))
+    """, (
+        new_status,
+        report_id
+    ))
 
     connection.commit()
     connection.close()
