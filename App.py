@@ -6,15 +6,12 @@ from database import (
     add_emergency,
     get_emergencies,
     update_status,
+    assign_team,
     authenticate_user
 )
 
 from ai_engine import analyze_emergency
 
-
-# --------------------------------
-# PAGE SETTINGS
-# --------------------------------
 
 st.set_page_config(
     page_title="Smart Campus Guardian",
@@ -23,16 +20,8 @@ st.set_page_config(
 )
 
 
-# --------------------------------
-# CREATE DATABASE
-# --------------------------------
-
 create_database()
 
-
-# --------------------------------
-# SESSION STATE
-# --------------------------------
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -41,9 +30,9 @@ if "role" not in st.session_state:
     st.session_state.role = ""
 
 
-# --------------------------------
+# =========================================================
 # LOGIN PAGE
-# --------------------------------
+# =========================================================
 
 if not st.session_state.logged_in:
 
@@ -87,9 +76,9 @@ if not st.session_state.logged_in:
             )
 
 
-# --------------------------------
+# =========================================================
 # STUDENT DASHBOARD
-# --------------------------------
+# =========================================================
 
 elif st.session_state.role == "student":
 
@@ -146,26 +135,22 @@ elif st.session_state.role == "student":
             and description
         ):
 
-            # AI analysis
             ai_priority, recommended_action = analyze_emergency(
                 emergency_type,
                 description
             )
 
-            priority = ai_priority
-
             created_at = datetime.now().strftime(
                 "%Y-%m-%d %H:%M:%S"
             )
 
-            # Save emergency
             add_emergency(
                 student_name,
                 emergency_type,
                 location,
                 location_details,
                 description,
-                priority,
+                ai_priority,
                 "Pending",
                 created_at
             )
@@ -174,7 +159,6 @@ elif st.session_state.role == "student":
                 "Emergency alert submitted successfully!"
             )
 
-            # AI result
             st.subheader(
                 "🤖 AI Emergency Analysis"
             )
@@ -201,20 +185,15 @@ elif st.session_state.role == "student":
         st.rerun()
 
 
-# --------------------------------
+# =========================================================
 # ADMIN DASHBOARD
-# --------------------------------
+# =========================================================
 
 elif st.session_state.role == "admin":
 
     st.title("🛡️ Admin Safety Dashboard")
 
     reports = get_emergencies()
-
-
-    # --------------------------------
-    # BASIC ANALYTICS
-    # --------------------------------
 
     total_reports = len(reports)
 
@@ -249,11 +228,13 @@ elif st.session_state.role == "admin":
     )
 
 
-    # --------------------------------
-    # ANALYTICS CARDS
-    # --------------------------------
+    # =====================================================
+    # OVERVIEW
+    # =====================================================
 
-    st.subheader("📊 Emergency Overview")
+    st.subheader(
+        "📊 Emergency Overview"
+    )
 
     col1, col2, col3 = st.columns(3)
 
@@ -294,9 +275,9 @@ elif st.session_state.role == "admin":
     st.divider()
 
 
-    # --------------------------------
-    # ANALYTICS CHARTS
-    # --------------------------------
+    # =====================================================
+    # ANALYTICS
+    # =====================================================
 
     st.subheader(
         "📈 Emergency Analytics"
@@ -304,7 +285,6 @@ elif st.session_state.role == "admin":
 
     if reports:
 
-        # Emergency type counts
         emergency_type_counts = {}
 
         for report in reports:
@@ -327,7 +307,6 @@ elif st.session_state.role == "admin":
         )
 
 
-        # Priority counts
         priority_counts = {}
 
         for report in reports:
@@ -359,9 +338,9 @@ elif st.session_state.role == "admin":
     st.divider()
 
 
-    # --------------------------------
+    # =====================================================
     # EMERGENCY REPORTS
-    # --------------------------------
+    # =====================================================
 
     st.subheader(
         "🚨 Emergency Reports"
@@ -415,27 +394,86 @@ elif st.session_state.role == "admin":
                 f"**Reported At:** {report[8]}"
             )
 
+            st.write(
+                f"**Assigned Team:** {report[9]}"
+            )
 
-            # Status update
+
+            # =================================================
+            # TEAM ASSIGNMENT
+            # =================================================
+
+            st.write(
+                "### 👥 Assign Response Team"
+            )
+
+            teams = [
+                "Unassigned",
+                "Medical Team",
+                "Security Team",
+                "Fire Response Team",
+                "Maintenance Team"
+            ]
+
+            current_team = report[9]
+
+            if current_team not in teams:
+                current_team = "Unassigned"
+
+            selected_team = st.selectbox(
+                "Select Response Team",
+                teams,
+                index=teams.index(current_team),
+                key=f"team_{report[0]}"
+            )
+
+
+            if st.button(
+                "👥 Assign Team",
+                key=f"assign_{report[0]}"
+            ):
+
+                assign_team(
+                    report[0],
+                    selected_team
+                )
+
+                st.success(
+                    f"Report #{report[0]} assigned to {selected_team}."
+                )
+
+                st.rerun()
+
+
+            # =================================================
+            # STATUS UPDATE
+            # =================================================
+
+            st.write(
+                "### 🔄 Update Emergency Status"
+            )
+
+            status_options = [
+                "Pending",
+                "Responded",
+                "Resolved"
+            ]
+
+            current_status = report[7]
+
+            if current_status not in status_options:
+                current_status = "Pending"
 
             new_status = st.selectbox(
-                "Update Status",
-                [
-                    "Pending",
-                    "Responded",
-                    "Resolved"
-                ],
-                index=[
-                    "Pending",
-                    "Responded",
-                    "Resolved"
-                ].index(report[7]),
+                "Select Status",
+                status_options,
+                index=status_options.index(current_status),
                 key=f"status_{report[0]}"
             )
 
 
             if st.button(
-                "Update Status",
+                "🔄 Update Status",
                 key=f"update_{report[0]}"
             ):
 
@@ -451,9 +489,9 @@ elif st.session_state.role == "admin":
                 st.rerun()
 
 
-    # --------------------------------
+    # =====================================================
     # LOGOUT
-    # --------------------------------
+    # =====================================================
 
     if st.button("Logout"):
 
