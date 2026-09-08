@@ -7,8 +7,13 @@ from database import (
     get_emergencies,
     update_status
 )
+
 from ai_engine import analyze_emergency
 
+
+# --------------------------------
+# PAGE SETTINGS
+# --------------------------------
 
 st.set_page_config(
     page_title="Smart Campus Guardian",
@@ -16,6 +21,10 @@ st.set_page_config(
     layout="wide"
 )
 
+
+# --------------------------------
+# CREATE DATABASE
+# --------------------------------
 
 create_database()
 
@@ -76,7 +85,7 @@ if "role" not in st.session_state:
 
 
 # --------------------------------
-# LOGIN
+# LOGIN PAGE
 # --------------------------------
 
 if not st.session_state.logged_in:
@@ -87,7 +96,9 @@ if not st.session_state.logged_in:
         "College Emergency & Safety Management System"
     )
 
-    username = st.text_input("Username")
+    username = st.text_input(
+        "Username"
+    )
 
     password = st.text_input(
         "Password",
@@ -176,22 +187,20 @@ elif st.session_state.role == "student":
             and description
         ):
 
-            priority = calculate_priority(
+            # AI emergency analysis
+            ai_priority, recommended_action = analyze_emergency(
                 emergency_type,
                 description
             )
-            ai_priority, recommended_action = 
-            analyze_emergency(
-                 emergency_type,
-                 description
-            )
 
-priority = ai_priority
+            # Save AI priority
+            priority = ai_priority
 
             created_at = datetime.now().strftime(
                 "%Y-%m-%d %H:%M:%S"
             )
 
+            # Save emergency report
             add_emergency(
                 student_name,
                 emergency_type,
@@ -207,18 +216,20 @@ priority = ai_priority
                 "Emergency alert submitted successfully!"
             )
 
-            st.info(
-                f"Priority detected: {priority}"
-            )
-            st.subheader("🤖 AI Emergency
-            Analysis")
+            # --------------------------------
+            # AI ANALYSIS RESULT
+            # --------------------------------
 
-            st.write(
-              f"**AI Priority:** {ai_priority}"
+            st.subheader(
+                "🤖 AI Emergency Analysis"
             )
 
             st.write(
-              f"**Recommended Action:** {recommended_action}"
+                f"**AI Priority:** {ai_priority}"
+            )
+
+            st.write(
+                f"**Recommended Action:** {recommended_action}"
             )
 
         else:
@@ -325,7 +336,9 @@ elif st.session_state.role == "admin":
     # EMERGENCY REPORTS
     # --------------------------------
 
-    st.subheader("🚨 Emergency Reports")
+    st.subheader(
+        "🚨 Emergency Reports"
+    )
 
     if not reports:
 
