@@ -9,20 +9,12 @@ from database import (
 )
 
 
-# --------------------------------
-# PAGE SETTINGS
-# --------------------------------
-
 st.set_page_config(
     page_title="Smart Campus Guardian",
     page_icon="🛡️",
     layout="wide"
 )
 
-
-# --------------------------------
-# CREATE DATABASE
-# --------------------------------
 
 create_database()
 
@@ -76,17 +68,14 @@ def calculate_priority(emergency_type, description):
 # --------------------------------
 
 if "logged_in" not in st.session_state:
-
     st.session_state.logged_in = False
 
-
 if "role" not in st.session_state:
-
     st.session_state.role = ""
 
 
 # --------------------------------
-# LOGIN PAGE
+# LOGIN
 # --------------------------------
 
 if not st.session_state.logged_in:
@@ -97,9 +86,7 @@ if not st.session_state.logged_in:
         "College Emergency & Safety Management System"
     )
 
-    username = st.text_input(
-        "Username"
-    )
+    username = st.text_input("Username")
 
     password = st.text_input(
         "Password",
@@ -240,12 +227,28 @@ elif st.session_state.role == "admin":
 
     reports = get_emergencies()
 
+    # --------------------------------
+    # ANALYTICS
+    # --------------------------------
+
     total_reports = len(reports)
 
     critical_cases = sum(
         1
         for report in reports
         if report[6] == "CRITICAL"
+    )
+
+    important_cases = sum(
+        1
+        for report in reports
+        if report[6] == "IMPORTANT"
+    )
+
+    normal_cases = sum(
+        1
+        for report in reports
+        if report[6] == "NORMAL"
     )
 
     pending_cases = sum(
@@ -260,7 +263,11 @@ elif st.session_state.role == "admin":
         if report[7] == "Resolved"
     )
 
-    col1, col2, col3, col4 = st.columns(4)
+    # --------------------------------
+    # ANALYTICS CARDS
+    # --------------------------------
+
+    col1, col2, col3 = st.columns(3)
 
     col1.metric(
         "Total Reports",
@@ -268,21 +275,37 @@ elif st.session_state.role == "admin":
     )
 
     col2.metric(
-        "Critical Cases",
+        "🔴 Critical Cases",
         critical_cases
     )
 
     col3.metric(
-        "Pending",
+        "🟠 Important Cases",
+        important_cases
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric(
+        "🟢 Normal Cases",
+        normal_cases
+    )
+
+    col2.metric(
+        "⏳ Pending",
         pending_cases
     )
 
-    col4.metric(
-        "Resolved",
+    col3.metric(
+        "✅ Resolved",
         resolved_cases
     )
 
     st.divider()
+
+    # --------------------------------
+    # EMERGENCY REPORTS
+    # --------------------------------
 
     st.subheader("🚨 Emergency Reports")
 
@@ -364,6 +387,10 @@ elif st.session_state.role == "admin":
                 )
 
                 st.rerun()
+
+    # --------------------------------
+    # LOGOUT
+    # --------------------------------
 
     if st.button("Logout"):
 
