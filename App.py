@@ -1,7 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from database import create_database, add_emergency, get_emergencies
-
+from database import create_database, add_emergency, get_emergencies, update_status
 st.set_page_config(
     page_title="Smart Campus Guardian",
     page_icon="🚨",
