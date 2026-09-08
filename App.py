@@ -17,6 +17,43 @@ create_database()
 
 def calculate_priority(emergency_type, description):
 
+    text = (
+        emergency_type + " " + description
+    ).lower()
+
+    critical_words = [
+        "fire",
+        "accident",
+        "unconscious",
+        "serious",
+        "bleeding",
+        "danger",
+        "emergency",
+        "critical"
+    ]
+
+    important_words = [
+        "injury",
+        "injured",
+        "pain",
+        "security",
+        "threat",
+        "medical",
+        "help"
+    ]
+
+    for word in critical_words:
+
+        if word in text:
+            return "CRITICAL"
+
+    for word in important_words:
+
+        if word in text:
+            return "IMPORTANT"
+
+    return "NORMAL"
+
     text = (emergency_type + " " + description).lower()
 
     critical_words = [
