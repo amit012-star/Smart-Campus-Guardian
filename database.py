@@ -19,6 +19,17 @@ def create_database():
         )
     """)
 
+    # Check existing columns
+    cursor.execute("PRAGMA table_info(emergencies)")
+    columns = [column[1] for column in cursor.fetchall()]
+
+    # Add location_details to old database
+    if "location_details" not in columns:
+        cursor.execute("""
+            ALTER TABLE emergencies
+            ADD COLUMN location_details TEXT
+        """)
+
     connection.commit()
     connection.close()
 
@@ -27,6 +38,7 @@ def add_emergency(
     student_name,
     emergency_type,
     location,
+    location_details,
     description,
     priority,
     status,
@@ -42,16 +54,18 @@ def add_emergency(
             student_name,
             emergency_type,
             location,
+            location_details,
             description,
             priority,
             status,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         student_name,
         emergency_type,
         location,
+        location_details,
         description,
         priority,
         status,
@@ -68,7 +82,16 @@ def get_emergencies():
     cursor = connection.cursor()
 
     cursor.execute("""
-        SELECT *
+        SELECT
+            id,
+            student_name,
+            emergency_type,
+            location,
+            location_details,
+            description,
+            priority,
+            status,
+            created_at
         FROM emergencies
         ORDER BY id DESC
     """)
