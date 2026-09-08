@@ -982,4 +982,57 @@ Emergency Type: {alert[2]}
             # -------------------------------------------------
 
             st.write(
-                "### ?
+               "### 🔄 Update Emergency Status"
+            )
+
+            status_options = [
+                "Pending",
+                "Responded",
+                "Resolved"
+            ]
+
+            current_status = report[7]
+
+            if current_status not in status_options:
+
+                current_status = "Pending"
+
+
+            new_status = st.selectbox(
+                "Select Status",
+                status_options,
+                index=status_options.index(current_status),
+                key=f"status_{report[0]}"
+            )
+
+
+            if st.button(
+                "🔄 Update Status",
+                key=f"update_{report[0]}"
+            ):
+
+                update_status(
+                    report[0],
+                    new_status
+                )
+
+                st.success(
+                    "Status updated successfully!"
+                )
+
+                st.rerun()
+
+
+    st.divider()
+
+
+    # =====================================================
+    # LOGOUT
+    # =====================================================
+
+    if st.button("Logout"):
+
+        st.session_state.logged_in = False
+        st.session_state.role = ""
+
+        st.rerun()
