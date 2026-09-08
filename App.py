@@ -7,6 +7,7 @@ from database import (
     get_emergencies,
     update_status
 )
+from ai_engine import analyze_emergency
 
 
 st.set_page_config(
@@ -179,6 +180,13 @@ elif st.session_state.role == "student":
                 emergency_type,
                 description
             )
+            ai_priority, recommended_action = 
+            analyze_emergency(
+                 emergency_type,
+                 description
+            )
+
+priority = ai_priority
 
             created_at = datetime.now().strftime(
                 "%Y-%m-%d %H:%M:%S"
@@ -201,6 +209,16 @@ elif st.session_state.role == "student":
 
             st.info(
                 f"Priority detected: {priority}"
+            )
+            st.subheader("🤖 AI Emergency
+            Analysis")
+
+            st.write(
+              f"**AI Priority:** {ai_priority}"
+            )
+
+            st.write(
+              f"**Recommended Action:** {recommended_action}"
             )
 
         else:
